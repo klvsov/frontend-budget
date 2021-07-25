@@ -47,17 +47,18 @@ export const Money = ({moneyType}) => {
   
   useEffect(() => {
     setFields(old => ({...old, openError: false}))
-    
   }, []);
   
   useEffect(() => {
     moneyType === 'income' && setCurrentMoney(income);
     moneyType === 'charge' && setCurrentMoney(charge);
+    setFields((old) => ({...old, sortField: 'date'}))
   }, [moneyType, income, charge]);
   
   useEffect(() => {
+    const currentMoney = moneyType === 'income' ? income : charge
     setCurrentMoney(currentMoney.slice().sort(byField(fields.sortField, fields.sortingType)));
-  }, [fields.sortField, fields.sortingType]);
+  }, [fields.sortField, fields.sortingType, moneyType, charge, income]);
   
   const deleteItem = (itemId) => {
     moneyType === 'income' && dispatch(deleteIncomeAsync(itemId));
