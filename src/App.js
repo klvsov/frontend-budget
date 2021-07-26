@@ -27,6 +27,9 @@ export const App = () => {
                     <Route exact path="/">
                         <Redirect to="/homepage" />
                     </Route>
+                    <Route>
+                      <HomePage />
+                    </Route>
                 </Switch>
             </main>
         </Router>
