@@ -27,9 +27,7 @@ export const App = () => {
                     <Route exact path="/">
                         <Redirect to="/homepage" />
                     </Route>
-                    <Route>
-                      <HomePage />
-                    </Route>
+                    <Redirect to="/homepage/incomes" />
                 </Switch>
             </main>
         </Router>
