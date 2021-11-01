@@ -14,7 +14,10 @@ import useStyle from '../../../style';
 export const Category = ({typeCategory}) => {
   const dispatch = useDispatch();
   const state = useSelector(state => state);
-  const {incomeCategories, chargeCategories, isLoading, error} = state.categories
+  const incomeCategories = state?.categories?.incomeCategories;
+  const chargeCategories = state?.categories?.chargeCategories;
+  const isLoading = state?.categories?.isLoading;
+  const error = state?.categories?.error;
   
   const [edit, setEdit] = useState(false);
   const [openError, setOpenError] = useState(false);

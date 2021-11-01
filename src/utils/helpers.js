@@ -1,4 +1,5 @@
 import moment from "moment";
+import axios from "axios";
 
 export const setDays = (period) => {
   const daysOfPeriod = [];
@@ -37,3 +38,26 @@ export const byField = (field, up) => {
     ? (a, b) => (a[field] < b[field] ? 1 : -1)
     : (a, b) => (a[field] > b[field] ? 1 : -1);
 };
+
+export const getSessionData = () => {
+  const token = sessionStorage.getItem("token");
+  const userId = sessionStorage.getItem("id");
+  return {token, userId}
+};
+
+export const api = axios.create({
+  headers: {
+    'Content-Type': 'application/json'
+  },
+})
+api.interceptors.request.use(
+  config => {
+    const token = sessionStorage.getItem('token');
+    config.headers["Content-Type"] = "application/json";
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  error => Promise.reject(error)
+);

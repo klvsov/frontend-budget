@@ -24,13 +24,7 @@ export const TransitionsModal = ({data, typeCategory, isOpen, label, type = 'cat
   
   useEffect(() => {
     if(data) {
-      setFields({
-        category: data.category,
-        description: data.description,
-        name: data.name,
-        date: data.date,
-        money: data.money
-      });
+      setFields({ ...data});
     } else {
       setFields(initialState);
     }
@@ -113,7 +107,7 @@ export const TransitionsModal = ({data, typeCategory, isOpen, label, type = 'cat
                     error={!!errors['category']}
                     helperText={errors['category']}
                   >
-                    {list?.map((option) => (
+                    {!!list?.length && list?.map((option) => (
                       <MenuItem key={option._id} value={option.name}>
                         {option.name}
                       </MenuItem>

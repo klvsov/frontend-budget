@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
+import {BASE_URL} from '../utils/constants';
+import {api, getSessionData} from "../utils/helpers";
+
 const initialState = {
   isLoading: false,
   income: [],
@@ -9,13 +12,14 @@ const initialState = {
 
 export const getIncomeAsync = createAsyncThunk(
   'income/getIncomeAsync',
-  async (_, {rejectWithValue}) => {
+  async (payload, {rejectWithValue}) => {
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/incomes');
-      if(!resp.ok) {
+      const resp = await api(`${BASE_URL}/api/incomes?user=${userId}`);
+      if(resp.statusText !== "OK") {
         throw new Error('Server error!')
       }
-      return await resp.json();
+      return await resp;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -25,15 +29,14 @@ export const getIncomeAsync = createAsyncThunk(
 export const addIncomeAsync = createAsyncThunk(
   'income/addIncomeAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {name, category, description, money, date} = payload;
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/incomes', {
+      const resp = await api(`${BASE_URL}/api/incomes`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({  name: payload.name, category: payload.category, description: payload.description, money: payload.money, date: payload.date }),
+        data: {  name, category, description, money, date, user: userId },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "Created") {
         throw new Error('Can\'t add money. Server error!')
       }
       return await dispatch(getIncomeAsync()).payload
@@ -46,15 +49,13 @@ export const addIncomeAsync = createAsyncThunk(
 export const editIncomeAsync = createAsyncThunk(
   'income/editIncomeAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {id, name, category, description, money, date } = payload;
     try{
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/incomes/${payload.id}`, {
+      const resp = await api(`${BASE_URL}/api/incomes/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({  name: payload.name, category: payload.category, description: payload.description, money: payload.money, date: payload.date }),
+        data: {  name, category, description, money, date },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t edit money. Server error!')
       }
       return await dispatch(getIncomeAsync()).payload
@@ -68,10 +69,10 @@ export const deleteIncomeAsync = createAsyncThunk(
   'income/deleteIncomeAsync',
   async (payload, {dispatch, rejectWithValue}) => {
     try {
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/incomes/${payload}`, {
+      const resp = await api(`${BASE_URL}/api/incomes/${payload}`, {
         method: 'DELETE',
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t delete money. Server error!')
       }
       return await dispatch(getIncomeAsync()).payload
@@ -83,13 +84,14 @@ export const deleteIncomeAsync = createAsyncThunk(
 
 export const getChargeAsync = createAsyncThunk(
   'charge/getChargeAsync',
-  async (_, {rejectWithValue}) => {
+  async (payload, {rejectWithValue}) => {
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/charges');
-      if(!resp.ok) {
+      const resp = await api(`${BASE_URL}/api/charges?user=${userId}`);
+      if(resp.statusText !== "OK") {
         throw new Error('Server error!')
       }
-      return await resp.json();
+      return resp;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -99,15 +101,14 @@ export const getChargeAsync = createAsyncThunk(
 export const addChargeAsync = createAsyncThunk(
   'charge/addChargeAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {name, category, description, money, date} = payload;
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/charges', {
+      const resp = await api(`${BASE_URL}/api/charges`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({  name: payload.name, category: payload.category, description: payload.description, money: payload.money, date: payload.date }),
+        data: {  name, category, description, money, date, user: userId },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "Created") {
         throw new Error('Can\'t add money. Server error!')
       }
       return await dispatch(getChargeAsync()).payload
@@ -120,15 +121,13 @@ export const addChargeAsync = createAsyncThunk(
 export const editChargeAsync = createAsyncThunk(
   'charge/editChargeAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {name, category, description, money, date} = payload;
     try {
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/charges/${payload.id}`, {
+      const resp = await api(`${BASE_URL}/api/charges/${payload.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({  name: payload.name, category: payload.category, description: payload.description, money: payload.money, date: payload.date }),
+        data: {  name, category, description, money, date },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t edit money. Server error!')
       }
       return await dispatch(getChargeAsync()).payload
@@ -142,10 +141,10 @@ export const deleteChargeAsync = createAsyncThunk(
   'charge/deleteChargeAsync',
   async (payload, {dispatch, rejectWithValue}) => {
     try {
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/charges/${payload}`, {
+      const resp = await api(`${BASE_URL}/api/charges/${payload}`, {
         method: 'DELETE',
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t delete money. Server error!')
       }
       return await dispatch(getChargeAsync()).payload
@@ -203,13 +202,13 @@ const moneySlice = createSlice({
     [getIncomeAsync.fulfilled]: (state, {payload}) => {
       state.isLoading = false;
       state.error = null;
-      state.income = payload;
+      state.income = payload.data;
     },
   
     [getChargeAsync.fulfilled]: (state, {payload}) => {
       state.isLoading = false;
       state.error = null;
-      state.charge = payload;
+      state.charge = payload.data;
     },
   },
 });

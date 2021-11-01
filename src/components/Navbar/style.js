@@ -7,8 +7,12 @@ const useStyle = makeStyles(() => {
     },
     appbar: {
       alignItems: "center",
+      flexDirection: 'row',
       "&>div": {
         padding: 0,
+        justifyContent: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto',
       },
     },
     active: {
@@ -17,9 +21,14 @@ const useStyle = makeStyles(() => {
     linkButton: {
       color: "#fff",
     },
+    logout: {
+      position: 'absolute',
+      right: 9,
+      color: "#fff",
+    },
     activeRoute: {
       "& > button": {
-        background: "rgba(0,0,0,.3)",
+        background: "rgba(0,0,0,.3) !important",
       },
     },
   });

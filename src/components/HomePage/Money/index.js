@@ -15,8 +15,9 @@ import useStyle from '../../style';
 
 export const Money = ({moneyType}) => {
   const dispatch = useDispatch();
-  const {income, charge, isLoading, error} = useSelector(state => state.money);
-  const {incomeCategories, chargeCategories} = useSelector(state => state.categories);
+  const {income, charge, isLoading, error} = useSelector(state => state?.money);
+  const incomeCategories = useSelector(state => state?.categories?.incomeCategories);
+  const chargeCategories = useSelector(state => state?.categories?.chargeCategories);
   
   const [data, setData] = useState(null);
   const [currentMoney, setCurrentMoney] = useState(income);
@@ -56,8 +57,8 @@ export const Money = ({moneyType}) => {
   }, [moneyType, income, charge]);
   
   useEffect(() => {
-    const currentMoney = moneyType === 'income' ? income : charge
-    setCurrentMoney(currentMoney.slice().sort(byField(fields.sortField, fields.sortingType)));
+    const currentMoney = moneyType === 'income' ? income : charge;
+    setCurrentMoney(currentMoney?.slice().sort(byField(fields.sortField, fields.sortingType)));
   }, [fields.sortField, fields.sortingType, moneyType, charge, income]);
   
   const deleteItem = (itemId) => {
@@ -71,7 +72,7 @@ export const Money = ({moneyType}) => {
       description: item.description,
       id: item._id,
       money: item.money,
-      date: item.date
+      date: item.date,
     });
     setFields(old => ({...old, edit: true}))
   };

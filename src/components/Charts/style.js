@@ -11,13 +11,13 @@ const useStyle = makeStyles(() => {
       justifyContent: "flex-end",
       flexDirection: "row",
     },
-    lineWrap: {
+    lineWrap: ({isData}) => ({
       margin: "8px 0",
       padding: "8px 0",
       "&>div": {
-        minHeight: 300,
+        minHeight: isData ? '300px' : 'auto',
       },
-    },
+    }),
     space: {
       display: "flex",
       justifyContent: "center",

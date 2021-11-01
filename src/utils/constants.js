@@ -10,4 +10,6 @@ export const COLORS_BORDER = [
   'rgba(75, 192, 192)',
   'rgba(255, 159, 64)',
 
-]
+];
+
+export const BASE_URL = "https://serene-ravine-72178.herokuapp.com"

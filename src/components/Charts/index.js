@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import{useDispatch, useSelector} from "react-redux";
 import {Typography, Grid, Paper, Radio, RadioGroup, FormControlLabel} from "@material-ui/core";
 import {Doughnut, Line} from "react-chartjs-2";
@@ -14,7 +14,6 @@ import useStyle from "./style";
 const noDataText = 'There is no data for this period'
 
 export const Charts = () => {
-  const classes = useStyle();
   
   const dispatch = useDispatch();
   const state = useSelector(state => state);
@@ -28,6 +27,10 @@ export const Charts = () => {
   let daysOfPeriod = [];
   const categoriesIn = {};
   const categoriesOut = {};
+  
+  const isData = useMemo(() => income.length || charge.length, [income, charge]);
+  
+  const classes = useStyle({isData});
   
   const handleSetPeriod = (event) => {
     setPeriod(event.target.value)
@@ -134,7 +137,7 @@ export const Charts = () => {
         <>
           <div className={classes.lineWrap}>
             <Paper className={classes.space}>
-              <Line data={data} options={{maintainAspectRatio: false}}/>
+              {getKeys(categoriesIn).length || getKeys(categoriesOut).length ? <Line data={data} options={{maintainAspectRatio: false}}/> : (<Typography>{noDataText}</Typography>)}
             </Paper>
           </div>
           <Grid container spacing={2}>

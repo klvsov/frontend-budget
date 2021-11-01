@@ -1,6 +1,6 @@
 import {Paper, Tab, Tabs, Typography} from "@material-ui/core";
-import React, {useState} from "react";
-import {BrowserRouter, Link, Redirect, Route, Switch} from "react-router-dom";
+import React, {useEffect, useMemo, useState} from "react";
+import {BrowserRouter, Link, Route, Switch, Redirect, useHistory} from "react-router-dom";
 import {Money} from './Money/index';
 import useStyle from './style';
 
@@ -8,10 +8,18 @@ export const HomePage = () => {
     const [value, setValue] = useState(0);
     const routes = ['/homepage/incomes', '/homepage/charges'];
     const classes = useStyle();
+    
+    const history = useHistory();
+    
+    const isToken = useMemo(() => sessionStorage.getItem("token"), []);
 
     const handleChangeTab = (event, newValue) => {
         setValue(newValue);
     }
+    
+    useEffect(() => {
+        if(!isToken) return history.push("/register")
+    }, [isToken, history])
 
     return (
         <div className={classes.homeWrapper}>

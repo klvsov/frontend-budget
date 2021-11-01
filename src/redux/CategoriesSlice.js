@@ -1,21 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
+import {BASE_URL} from "../utils/constants";
+import {api, getSessionData} from "../utils/helpers";
+
 const initialState = {
   isLoading: false,
   incomeCategories: [],
   chargeCategories: [],
   error: null
-}
+};
 
 export const getIncomeCategoriesAsync = createAsyncThunk(
   'incomeCategories/getIncomeCategoryAsync',
-  async (_, {rejectWithValue}) => {
+  async (payload, {rejectWithValue}) => {
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/income-categories');
-      if(!resp.ok) {
+      const resp = await api(`${BASE_URL}/api/income-categories?user=${userId}`);
+      if(resp.statusText !== "OK") {
         throw new Error('Server error!')
       }
-      return await resp.json();
+      return resp;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -25,15 +29,14 @@ export const getIncomeCategoriesAsync = createAsyncThunk(
 export const addIncomeCategoriesAsync = createAsyncThunk(
   'incomeCategories/addIncomeCategoriesAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {category, description} = payload;
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/income-categories', {
+      const resp = await api(`${BASE_URL}/api/income-categories`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: payload.category, description: payload.description }),
+        data: { name: category, description, user: userId },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "Created") {
         throw new Error('Can\'t add category. Server error!')
       }
       return await dispatch(getIncomeCategoriesAsync()).payload
@@ -46,18 +49,16 @@ export const addIncomeCategoriesAsync = createAsyncThunk(
 export const editIncomeCategoryAsync = createAsyncThunk(
   'incomeCategories/editIncomeCategoriesAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {category, description, id} = payload;
     try {
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/income-categories/${payload.id}`, {
+      const resp = await api(`${BASE_URL}/api/income-categories/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: payload.category, description: payload.description }),
+        data: { name: category, description },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t edit category. Server error!')
       }
-      return await dispatch(getIncomeCategoriesAsync()).payload;
+      return await dispatch(getIncomeCategoriesAsync()).payload
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -68,10 +69,10 @@ export const deleteIncomeCategoryAsync = createAsyncThunk(
   'incomeCategories/deleteIncomeCategoriesAsync',
   async (payload, {dispatch, rejectWithValue}) => {
     try {
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/income-categories/${payload}`, {
+      const resp = await api(`${BASE_URL}/api/income-categories/${payload}`, {
         method: 'DELETE',
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t delete category. Server error!')
       }
       return await dispatch(getIncomeCategoriesAsync()).payload;
@@ -83,13 +84,14 @@ export const deleteIncomeCategoryAsync = createAsyncThunk(
 
 export const getChargeCategoriesAsync = createAsyncThunk(
   'chargeCategories/getChargeCategoryAsync',
-  async (_, {rejectWithValue}) => {
+  async (payload, {rejectWithValue}) => {
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/charge-categories');
-      if(!resp.ok) {
+      const resp = await api(`${BASE_URL}/api/charge-categories?user=${userId}`);
+      if(resp.statusText !== "OK") {
         throw new Error('Server error!')
       }
-      return await resp.json();
+      return resp;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -99,15 +101,14 @@ export const getChargeCategoriesAsync = createAsyncThunk(
 export const addChargeCategoriesAsync = createAsyncThunk(
   'chargeCategories/addChargeCategoriesAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {category, description} = payload;
+    const {userId} = getSessionData();
     try {
-      const resp = await fetch('https://serene-ravine-72178.herokuapp.com/api/charge-categories', {
+      const resp = await api(`${BASE_URL}/api/charge-categories`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: payload.category, description: payload.description }),
+        data: { name: category, description, user: userId },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "Created") {
         throw new Error('Can\'t add category. Server error!')
       }
       return await dispatch(getChargeCategoriesAsync()).payload;
@@ -120,18 +121,16 @@ export const addChargeCategoriesAsync = createAsyncThunk(
 export const editChargeCategoryAsync = createAsyncThunk(
   'chargeCategories/editChargeCategoriesAsync',
   async (payload, {dispatch, rejectWithValue}) => {
+    const {category, description, id} = payload;
     try {
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/charge-categories/${payload.id}`, {
+      const resp = await api(`${BASE_URL}/api/charge-categories/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: payload.category, description: payload.description }),
+        data: { name: category, description },
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t edit category. Server error!')
       }
-      return await dispatch(getChargeCategoriesAsync()).payload;
+      return await dispatch(getChargeCategoriesAsync()).payload
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -142,10 +141,10 @@ export const deleteChargeCategoryAsync = createAsyncThunk(
   'chargeCategories/deleteChargeCategoriesAsync',
   async (payload, {dispatch, rejectWithValue}) => {
     try {
-      const resp = await fetch(`https://serene-ravine-72178.herokuapp.com/api/charge-categories/${payload}`, {
+      const resp = await api(`${BASE_URL}/api/charge-categories/${payload}`, {
         method: 'DELETE',
       });
-      if(!resp.ok) {
+      if(resp.statusText !== "OK") {
         throw new Error('Can\'t delete category. Server error!')
       }
       return await dispatch(getChargeCategoriesAsync()).payload;
@@ -170,7 +169,7 @@ const setFulfilled = (state) => {
   state.error = null;
 }
 
-const categoriesSlice = createSlice({
+const CategoriesSlice = createSlice({
   name: 'categories',
   initialState,
   extraReducers: {
@@ -202,15 +201,15 @@ const categoriesSlice = createSlice({
     [getIncomeCategoriesAsync.fulfilled]: (state, {payload}) => {
       state.isLoading = false;
       state.error = null;
-      state.incomeCategories = payload
+      state.incomeCategories = payload.data
     },
   
     [getChargeCategoriesAsync.fulfilled]: (state, {payload}) => {
       state.isLoading = false;
       state.error = null;
-      state.chargeCategories = payload;
+      state.chargeCategories = payload.data;
     },
   },
 });
 
-export default categoriesSlice.reducer;
+export default CategoriesSlice.reducer;
