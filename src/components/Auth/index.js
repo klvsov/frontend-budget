@@ -54,7 +54,7 @@ export const Registration = () => {
   
   useEffect(() => {
     if (error) enqueueSnackbar(error.message || error, {variant: "error"});
-    if (userId) history.push("/homepage/incomes");
+    if (userId) history.push("/homepage");
     // eslint-disable-next-line
   }, [error, userId]);
   
