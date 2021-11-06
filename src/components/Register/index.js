@@ -235,7 +235,7 @@ export const Register = () => {
           />
         </div>
 
-        <Button disabled={isLoading} onClick={() => history.push('/register')}>
+        <Button  onClick={() => history.push('/login')}>
           Already a member? Log in
         </Button>
       </Paper>

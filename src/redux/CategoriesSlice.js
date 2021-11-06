@@ -18,12 +18,12 @@ export const getIncomeCategoriesAsync = createAsyncThunk(
       const resp = await api(
         `${BASE_URL}/api/income-categories?user=${userId}`
       );
-      if (resp.statusText !== 'OK') {
-        throw new Error('Server error!');
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return resp;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -38,12 +38,12 @@ export const addIncomeCategoriesAsync = createAsyncThunk(
         method: 'POST',
         data: { name: category, description, user: userId },
       });
-      if (resp.statusText !== 'Created') {
-        throw new Error("Can't add category. Server error!");
+      if (resp.status !== 201) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getIncomeCategoriesAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -57,12 +57,12 @@ export const editIncomeCategoryAsync = createAsyncThunk(
         method: 'PUT',
         data: { name: category, description },
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't edit category. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getIncomeCategoriesAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -74,12 +74,12 @@ export const deleteIncomeCategoryAsync = createAsyncThunk(
       const resp = await api(`${BASE_URL}/api/income-categories/${payload}`, {
         method: 'DELETE',
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't delete category. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getIncomeCategoriesAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -92,12 +92,12 @@ export const getChargeCategoriesAsync = createAsyncThunk(
       const resp = await api(
         `${BASE_URL}/api/charge-categories?user=${userId}`
       );
-      if (resp.statusText !== 'OK') {
-        throw new Error('Server error!');
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return resp;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -112,12 +112,12 @@ export const addChargeCategoriesAsync = createAsyncThunk(
         method: 'POST',
         data: { name: category, description, user: userId },
       });
-      if (resp.statusText !== 'Created') {
-        throw new Error("Can't add category. Server error!");
+      if (resp.status !== 201) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getChargeCategoriesAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -131,12 +131,12 @@ export const editChargeCategoryAsync = createAsyncThunk(
         method: 'PUT',
         data: { name: category, description },
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't edit category. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getChargeCategoriesAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -148,19 +148,19 @@ export const deleteChargeCategoryAsync = createAsyncThunk(
       const resp = await api(`${BASE_URL}/api/charge-categories/${payload}`, {
         method: 'DELETE',
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't delete category. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getChargeCategoriesAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
 
 const setError = (state, action) => {
   state.isLoading = false;
-  state.error = action.payload;
+  state.error = action.payload.response?.data?.message;
 };
 
 const setLoading = (state) => {

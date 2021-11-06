@@ -159,7 +159,7 @@ export const Login = () => {
             Login
           </Button>
         </form>
-        <Button disabled={isLoading} onClick={() => history.push('/login')}>
+        <Button disabled={isLoading} onClick={() => history.push('/register')}>
           Join free
         </Button>
       </Paper>

@@ -22,11 +22,11 @@ export const registerAsync = createAsyncThunk(
         data: { name, email, password },
       });
       if (resp.status !== 200) {
-        throw new Error('Server error!');
+        return rejectWithValue(resp.data)
       }
       return resp;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -44,7 +44,7 @@ export const loginAsync = createAsyncThunk(
         data: { email, password },
       });
       if (resp.status !== 200) {
-        throw new Error('Server error!');
+        return rejectWithValue(resp.data)
       }
       const { token, id } = resp.data;
       if (token && id) {
@@ -53,7 +53,7 @@ export const loginAsync = createAsyncThunk(
       }
       return resp;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -71,7 +71,7 @@ export const googleLoginAsync = createAsyncThunk(
         data: { email },
       });
       if (resp.status !== 200) {
-        throw new Error('Server error!');
+        return rejectWithValue(resp.data)
       }
       const { token, id } = resp.data;
       if (token && id) {
@@ -80,7 +80,7 @@ export const googleLoginAsync = createAsyncThunk(
       }
       return resp;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -88,8 +88,9 @@ export const googleLoginAsync = createAsyncThunk(
 export const logoutAsync = createAsyncThunk('auth/logoutAsync', () => {});
 
 const setError = (state, action) => {
+  console.log(action.payload)
   state.isLoading = false;
-  state.error = action.payload;
+  state.error = action.payload.response?.data?.message;
 };
 
 const setLoading = (state) => {

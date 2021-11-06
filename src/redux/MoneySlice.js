@@ -16,12 +16,12 @@ export const getIncomeAsync = createAsyncThunk(
     const { userId } = getSessionData();
     try {
       const resp = await api(`${BASE_URL}/api/incomes?user=${userId}`);
-      if (resp.statusText !== 'OK') {
-        throw new Error('Server error!');
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await resp;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -36,12 +36,12 @@ export const addIncomeAsync = createAsyncThunk(
         method: 'POST',
         data: { name, category, description, money, date, user: userId },
       });
-      if (resp.statusText !== 'Created') {
-        throw new Error("Can't add money. Server error!");
+      if (resp.status !== 201) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getIncomeAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -55,12 +55,12 @@ export const editIncomeAsync = createAsyncThunk(
         method: 'PUT',
         data: { name, category, description, money, date },
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't edit money. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getIncomeAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -72,12 +72,12 @@ export const deleteIncomeAsync = createAsyncThunk(
       const resp = await api(`${BASE_URL}/api/incomes/${payload}`, {
         method: 'DELETE',
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't delete money. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getIncomeAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -88,12 +88,12 @@ export const getChargeAsync = createAsyncThunk(
     const { userId } = getSessionData();
     try {
       const resp = await api(`${BASE_URL}/api/charges?user=${userId}`);
-      if (resp.statusText !== 'OK') {
-        throw new Error('Server error!');
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return resp;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -108,12 +108,12 @@ export const addChargeAsync = createAsyncThunk(
         method: 'POST',
         data: { name, category, description, money, date, user: userId },
       });
-      if (resp.statusText !== 'Created') {
-        throw new Error("Can't add money. Server error!");
+      if (resp.status !== 201) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getChargeAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -127,12 +127,12 @@ export const editChargeAsync = createAsyncThunk(
         method: 'PUT',
         data: { name, category, description, money, date },
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't edit money. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getChargeAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
@@ -144,19 +144,19 @@ export const deleteChargeAsync = createAsyncThunk(
       const resp = await api(`${BASE_URL}/api/charges/${payload}`, {
         method: 'DELETE',
       });
-      if (resp.statusText !== 'OK') {
-        throw new Error("Can't delete money. Server error!");
+      if (resp.status !== 200) {
+        return rejectWithValue(resp.data)
       }
       return await dispatch(getChargeAsync()).payload;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw rejectWithValue(error);
     }
   }
 );
 
 const setError = (state, action) => {
   state.isLoading = false;
-  state.error = action.payload;
+  state.error = action.payload.response?.data?.message;;
 };
 
 const setLoading = (state) => {
