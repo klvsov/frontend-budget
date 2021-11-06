@@ -1,4 +1,4 @@
-import {createStyles, makeStyles} from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 const useStyle = makeStyles(() => {
   return createStyles({
@@ -9,14 +9,14 @@ const useStyle = makeStyles(() => {
         boxSizing: 'border-box',
       },
       a: {
-        textDecoration: 'none'
-      }
+        textDecoration: 'none',
+      },
     },
     main: {
       maxWidth: 1024,
-      margin: "2rem auto"
-    }
-  })
+      margin: '2rem auto',
+    },
+  });
 });
 
-export default useStyle
+export default useStyle;

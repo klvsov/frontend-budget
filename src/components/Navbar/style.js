@@ -1,4 +1,4 @@
-import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 const useStyle = makeStyles(() => {
   return createStyles({
@@ -6,9 +6,9 @@ const useStyle = makeStyles(() => {
       flexGrow: 1,
     },
     appbar: {
-      alignItems: "center",
+      alignItems: 'center',
       flexDirection: 'row',
-      "&>div": {
+      '&>div': {
         padding: 0,
         justifyContent: 'center',
         marginLeft: 'auto',
@@ -16,19 +16,19 @@ const useStyle = makeStyles(() => {
       },
     },
     active: {
-      color: "red",
+      color: 'red',
     },
     linkButton: {
-      color: "#fff",
+      color: '#fff',
     },
     logout: {
       position: 'absolute',
       right: 9,
-      color: "#fff",
+      color: '#fff',
     },
     activeRoute: {
-      "& > button": {
-        background: "rgba(0,0,0,.3) !important",
+      '& > button': {
+        background: 'rgba(0,0,0,.3) !important',
       },
     },
   });

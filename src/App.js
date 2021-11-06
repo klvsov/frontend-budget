@@ -1,42 +1,46 @@
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import {Navbar} from 'components/Navbar'
-import {Charts} from "components/Charts";
-import {HomePage} from "components/HomePage";
-import {Categories} from "components/Categories";
-import {Registration} from "components/Auth";
+import { Navbar } from 'components/Navbar';
+import { Charts } from 'components/Charts';
+import { HomePage } from 'components/HomePage';
+import { Categories } from 'components/Categories';
+import { Register } from 'components/Register';
+import { Login } from 'components/Login';
 import useStyle from './style';
 
 export const App = () => {
   const classes = useStyle();
-  
+
   return (
     <div className="App">
       <Router>
-        <Navbar/>
+        <Navbar />
         <main className={classes.main}>
           <Switch>
             <Route path="/register" exact>
-              <Registration/>
+              <Register />
+            </Route>
+            <Route path="/login" exact>
+              <Login />
             </Route>
             <Route path="/" exact>
-              <HomePage/>
+              <HomePage />
             </Route>
             <Route path="/charts" exact>
-              <Charts/>
+              <Charts />
             </Route>
             <Route path="/categories" exact>
-              <Categories/>
+              <Categories />
             </Route>
             <Route path="/" exact>
-              <HomePage/>
+              <HomePage />
             </Route>
             <Route path="/homepage" exact>
-              <HomePage/>
+              <HomePage />
             </Route>
           </Switch>
         </main>
       </Router>
     </div>
   );
-}
+};

@@ -1,28 +1,28 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import axios from "axios";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-import {BASE_URL} from "../utils/constants";
+import { BASE_URL } from '../utils/constants';
 
 const initialState = {
   user: null,
   isLoading: false,
-  error: null
-}
+  error: null,
+};
 
 export const registerAsync = createAsyncThunk(
   'auth/registerAsync',
-  async (payload, {rejectWithValue}) => {
-    const {name, email, password} = payload
+  async (payload, { rejectWithValue }) => {
+    const { name, email, password } = payload;
     try {
       const resp = await axios(`${BASE_URL}/api/register`, {
-        method: "POST",
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        data: {name, email, password},
+        data: { name, email, password },
       });
       if (resp.status !== 200) {
-        throw new Error('Server error!')
+        throw new Error('Server error!');
       }
       return resp;
     } catch (error) {
@@ -33,23 +33,23 @@ export const registerAsync = createAsyncThunk(
 
 export const loginAsync = createAsyncThunk(
   'auth/loginAsync',
-  async (payload, {rejectWithValue}) => {
-    const {email, password} = payload;
+  async (payload, { rejectWithValue }) => {
+    const { email, password } = payload;
     try {
       const resp = await axios(`${BASE_URL}/api/login`, {
-        method: "POST",
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        data: {email, password},
+        data: { email, password },
       });
       if (resp.status !== 200) {
-        throw new Error('Server error!')
+        throw new Error('Server error!');
       }
-      const {token, id} = resp.data;
+      const { token, id } = resp.data;
       if (token && id) {
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("id", id);
+        sessionStorage.setItem('token', token);
+        sessionStorage.setItem('id', id);
       }
       return resp;
     } catch (error) {
@@ -60,23 +60,23 @@ export const loginAsync = createAsyncThunk(
 
 export const googleLoginAsync = createAsyncThunk(
   'auth/googleLoginAsync',
-  async (payload, {rejectWithValue}) => {
-    const {email} = payload;
+  async (payload, { rejectWithValue }) => {
+    const { email } = payload;
     try {
       const resp = await axios(`${BASE_URL}/api/google`, {
-        method: "POST",
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        data: {email},
+        data: { email },
       });
       if (resp.status !== 200) {
-        throw new Error('Server error!')
+        throw new Error('Server error!');
       }
-      const {token, id} = resp.data;
+      const { token, id } = resp.data;
       if (token && id) {
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("id", id);
+        sessionStorage.setItem('token', token);
+        sessionStorage.setItem('id', id);
       }
       return resp;
     } catch (error) {
@@ -85,25 +85,22 @@ export const googleLoginAsync = createAsyncThunk(
   }
 );
 
-export const logoutAsync = createAsyncThunk(
-  'auth/logoutAsync',
-  () => {}
-);
+export const logoutAsync = createAsyncThunk('auth/logoutAsync', () => {});
 
 const setError = (state, action) => {
   state.isLoading = false;
-  state.error = action.payload
+  state.error = action.payload;
 };
 
 const setLoading = (state) => {
   state.isLoading = true;
-  state.error = null
+  state.error = null;
 };
 
 const setFulfilled = (state) => {
   state.isLoading = false;
   state.error = null;
-}
+};
 
 const AuthSlice = createSlice({
   name: 'auth',
@@ -112,33 +109,33 @@ const AuthSlice = createSlice({
     [registerAsync.pending]: setLoading,
     [loginAsync.pending]: setLoading,
     [googleLoginAsync.pending]: setLoading,
-    
+
     [registerAsync.rejected]: setError,
     [loginAsync.rejected]: setError,
     [googleLoginAsync.rejected]: setError,
-    
+
     [registerAsync.fulfilled]: setFulfilled,
     [loginAsync.fulfilled]: setFulfilled,
     [googleLoginAsync.fulfilled]: setFulfilled,
     [logoutAsync.fulfilled]: setFulfilled,
-    
+
     [registerAsync.fulfilled]: (state) => {
       state.isLoading = false;
       state.error = null;
     },
-    
-    [loginAsync.fulfilled]: (state, {payload}) => {
+
+    [loginAsync.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.error = null;
       state.user = payload?.data;
     },
-  
-    [googleLoginAsync.fulfilled]: (state, {payload}) => {
+
+    [googleLoginAsync.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.error = null;
       state.user = payload?.data;
     },
-  
+
     [logoutAsync.fulfilled]: (state) => {
       state.isLoading = false;
       state.error = null;

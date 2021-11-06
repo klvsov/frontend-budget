@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import "./style.css"
+import './style.css';
 
 export const ButtonLoader = () => {
   return (
@@ -10,5 +10,5 @@ export const ButtonLoader = () => {
       <div></div>
       <div></div>
     </div>
-  )
-}
+  );
+};

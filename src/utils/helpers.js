@@ -1,18 +1,18 @@
-import moment from "moment";
-import axios from "axios";
+import moment from 'moment';
+import axios from 'axios';
 
 export const setDays = (period) => {
   const daysOfPeriod = [];
-  const x = period === "week" ? 7 : 30;
+  const x = period === 'week' ? 7 : 30;
   for (let i = 0; i < x; i++) {
-    daysOfPeriod.push(moment().subtract(i, "days").format("DD.MM.YYYY"));
+    daysOfPeriod.push(moment().subtract(i, 'days').format('DD.MM.YYYY'));
   }
   return daysOfPeriod.reverse();
 };
 
 export const startDateOfPeriod = (period) => {
-  const x = period === "week" ? 7 : 30;
-  return Date.parse(moment().subtract(x, "days")._d);
+  const x = period === 'week' ? 7 : 30;
+  return Date.parse(moment().subtract(x, 'days')._d);
 };
 
 export const getColors = (idx, colors) => {
@@ -40,24 +40,24 @@ export const byField = (field, up) => {
 };
 
 export const getSessionData = () => {
-  const token = sessionStorage.getItem("token");
-  const userId = sessionStorage.getItem("id");
-  return {token, userId}
+  const token = sessionStorage.getItem('token');
+  const userId = sessionStorage.getItem('id');
+  return { token, userId };
 };
 
 export const api = axios.create({
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
-})
+});
 api.interceptors.request.use(
-  config => {
+  (config) => {
     const token = sessionStorage.getItem('token');
-    config.headers["Content-Type"] = "application/json";
+    config.headers['Content-Type'] = 'application/json';
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
-  error => Promise.reject(error)
+  (error) => Promise.reject(error)
 );
