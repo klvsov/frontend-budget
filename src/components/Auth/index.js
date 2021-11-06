@@ -4,17 +4,17 @@ import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import VisibilityTwoToneIcon from "@material-ui/icons/VisibilityTwoTone";
 import VisibilityOffTwoToneIcon from "@material-ui/icons/VisibilityOffTwoTone";
 import {useSnackbar} from "notistack";
-import {registerAsync, loginAsync} from "../../redux/AuthSlice";
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from "react-router-dom";
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import {getSessionData} from "../../utils/helpers";
-import {GoogleLogin} from 'react-google-login'
+import {GoogleLogin} from 'react-google-login';
 
+import {registerAsync, loginAsync, googleLoginAsync} from "redux/AuthSlice";
+import {getSessionData} from "utils/helpers";
+import {ButtonLoader} from "components/ButtonLoader"
 import useStyle from "./style";
-import {ButtonLoader} from "../ButtonLoader"
 
 const INITIAL_VALUE = {
   email: null,
@@ -25,7 +25,6 @@ const INITIAL_VALUE = {
 };
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_ID;
-console.log(GOOGLE_CLIENT_ID)
 
 export const Registration = () => {
   
@@ -42,8 +41,15 @@ export const Registration = () => {
   const isLoading = useSelector(state => state.auth?.isLoading);
   const {userId} = getSessionData();
   
-  const gResponse = (response) => {
-    console.log(response);
+  const googleResponse = async (response) => {
+    const email = await response.profileObj.email;
+    if(email) {
+      try {
+        await dispatch(googleLoginAsync({email}));
+      } catch (e) {
+        enqueueSnackbar(e.message, {variant: "error"});
+      }
+    }
   };
   
   useEffect(() => {
@@ -210,6 +216,9 @@ export const Registration = () => {
               </Typography>
             </FormControl>
           )}
+          <div className={classes.buttonLoaderWrapper}>
+            {isLoading && <ButtonLoader /> }
+          </div>
           <Button
             disabled={isLoading}
             disableRipple
@@ -219,15 +228,15 @@ export const Registration = () => {
             type="submit"
             onClick={handleSubmit(onSubmit)}
           >
-            {isLoading ? <ButtonLoader /> : isRegisterView ? "Sign Up" : "Login"}
+            {isRegisterView ? "Sign Up" : "Login"}
           </Button>
         </form>
         <div className={classes.googleButton}>
           <GoogleLogin
             clientId={GOOGLE_CLIENT_ID}
             buttonText="Sign Up with Google"
-            onSuccess={gResponse}
-            onFailure={gResponse}
+            onSuccess={googleResponse}
+            onFailure={googleResponse}
             cookiePolicy={"single_host_origin"}
           />
         </div>

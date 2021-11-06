@@ -3,12 +3,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from "@material-ui/core";
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import DeleteForeverTwoToneIcon from '@material-ui/icons/DeleteForeverTwoTone';
-import {Alert} from '@material-ui/lab';
+import {useSnackbar} from "notistack"
 
-import {TransitionsModal} from "../../../Modal";
-import {deleteIncomeCategoryAsync, getIncomeCategoriesAsync, deleteChargeCategoryAsync, getChargeCategoriesAsync} from '../../../../redux/CategoriesSlice';
-import {Loader} from "../../../Loader";
-
+import {TransitionsModal} from "components/Modal";
+import {deleteIncomeCategoryAsync, getIncomeCategoriesAsync, deleteChargeCategoryAsync, getChargeCategoriesAsync} from 'redux/CategoriesSlice';
+import {Loader} from "components/Loader";
 import useStyle from '../../../style';
 
 export const Category = ({typeCategory}) => {
@@ -20,31 +19,21 @@ export const Category = ({typeCategory}) => {
   const error = state?.categories?.error;
   
   const [edit, setEdit] = useState(false);
-  const [openError, setOpenError] = useState(false);
   const [data, setData] = useState(null);
-  const [currentCategory, setCurrentCategory] = useState(incomeCategories)
+  const [currentCategory, setCurrentCategory] = useState(incomeCategories);
+  const {enqueueSnackbar} = useSnackbar()
   
   const classes = useStyle();
   
   useEffect(() => {
-    error && setOpenError(true);
-    let timeout;
-    timeout = setTimeout(() => {
-      setOpenError(false)
-    }, 2000);
-    return () => {
-      clearTimeout(timeout)
-    }
+    if(error) enqueueSnackbar(`An error occurred: ${error}`, {variant: "error"});
+    // eslint-disable-next-line
   }, [error]);
   
   useEffect(() => {
     typeCategory === 'income' && dispatch(getIncomeCategoriesAsync());
     typeCategory === 'charge' && dispatch(getChargeCategoriesAsync());
   }, [dispatch, typeCategory]);
-  
-  useEffect(() => {
-    setOpenError(false);
-  }, []);
   
   useEffect(() => {
     typeCategory === 'income' && setCurrentCategory(incomeCategories);
@@ -127,11 +116,6 @@ export const Category = ({typeCategory}) => {
             </Table>
           </TableContainer>
         )}
-        {openError && <Alert className={classes.error} severity="error">
-          <Typography>
-            An error occurred: {error}
-          </Typography>
-        </Alert>}
       </Box>
     </>
   )

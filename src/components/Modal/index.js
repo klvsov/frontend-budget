@@ -2,9 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {Backdrop, Box, Button, Fade, MenuItem, Modal, TextField} from '@material-ui/core';
 
-import {addIncomeCategoriesAsync, editIncomeCategoryAsync, addChargeCategoriesAsync, editChargeCategoryAsync} from "../../redux/CategoriesSlice";
-import {addChargeAsync, addIncomeAsync, editChargeAsync, editIncomeAsync} from "../../redux/MoneySlice";
-
+import {
+  addIncomeCategoriesAsync,
+  editIncomeCategoryAsync,
+  addChargeCategoriesAsync,
+  editChargeCategoryAsync
+} from "redux/CategoriesSlice";
+import {addChargeAsync, addIncomeAsync, editChargeAsync, editIncomeAsync} from "redux/MoneySlice";
 import useStyle from './style'
 
 const initialState = {
@@ -15,7 +19,7 @@ const initialState = {
   date: new Date()
 }
 
-export const TransitionsModal = ({data, typeCategory, isOpen, label, type = 'category', isMoney = true, onClose, list = null}) => {
+export const TransitionsModal = ({ data, typeCategory, isOpen, label, type = 'category', isMoney = true, onClose, list = null }) => {
   const [fields, setFields] = useState(initialState);
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
@@ -23,8 +27,8 @@ export const TransitionsModal = ({data, typeCategory, isOpen, label, type = 'cat
   const classes = useStyle();
   
   useEffect(() => {
-    if(data) {
-      setFields({ ...data});
+    if (data) {
+      setFields({...data});
     } else {
       setFields(initialState);
     }
@@ -35,7 +39,7 @@ export const TransitionsModal = ({data, typeCategory, isOpen, label, type = 'cat
     setFields(prev => ({
       ...prev, [name]: value
     }));
-    const errorList = { ...errors };
+    const errorList = {...errors};
     delete errorList[name];
     setErrors(errorList);
   }
@@ -58,21 +62,35 @@ export const TransitionsModal = ({data, typeCategory, isOpen, label, type = 'cat
       return;
     }
     
-    if(data){
-      if(isMoney) {
+    if (data) {
+      if (isMoney) {
         type === 'income' && dispatch(editIncomeAsync({...fields, id: data.id}))
         type === 'charge' && dispatch(editChargeAsync({...fields, id: data.id}))
       } else {
-        typeCategory === 'income' && dispatch(editIncomeCategoryAsync({category: fields.category, description: fields.description, id: data.id}))
-        typeCategory === 'charge' && dispatch(editChargeCategoryAsync({category: fields.category, description: fields.description, id: data.id}))
+        typeCategory === 'income' && dispatch(editIncomeCategoryAsync({
+          category: fields.category,
+          description: fields.description,
+          id: data.id
+        }))
+        typeCategory === 'charge' && dispatch(editChargeCategoryAsync({
+          category: fields.category,
+          description: fields.description,
+          id: data.id
+        }))
       }
     } else {
-      if(isMoney) {
+      if (isMoney) {
         type === 'income' && dispatch(addIncomeAsync({...fields}))
         type === 'charge' && dispatch(addChargeAsync({...fields}))
       } else {
-        typeCategory === 'income' && dispatch(addIncomeCategoriesAsync({category: fields.category, description: fields.description}));
-        typeCategory === 'charge' && dispatch(addChargeCategoriesAsync({category: fields.category, description: fields.description}));
+        typeCategory === 'income' && dispatch(addIncomeCategoriesAsync({
+          category: fields.category,
+          description: fields.description
+        }));
+        typeCategory === 'charge' && dispatch(addChargeCategoriesAsync({
+          category: fields.category,
+          description: fields.description
+        }));
       }
     }
     onClose();

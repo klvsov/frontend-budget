@@ -86,7 +86,7 @@ const useStyle = makeStyles((theme) => {
       position: "relative",
       fontWeight: 400,
       overflow: "hidden",
-      marginTop: theme.spacing(6),
+      marginTop: 10,
       padding: `${theme.spacing(1.6)}px`,
       border: "none",
       borderRadius: "8px",
@@ -154,8 +154,14 @@ const useStyle = makeStyles((theme) => {
     googleButton: {
       marginBottom: 32,
       "& button": {
-        borderRadius: 20
+        borderRadius: "8px !important"
       }
+    },
+    buttonLoaderWrapper: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 50
     }
   })
 });

@@ -6,11 +6,11 @@ import AccountBalanceWalletTwoToneIcon from '@material-ui/icons/AccountBalanceWa
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import CategoryIcon from '@mui/icons-material/Category';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {logoutAsync} from "../../redux/AuthSlice"
 
+import {logoutAsync} from "redux/AuthSlice"
+import {getSessionData} from "utils/helpers";
+import {useWindowSize} from "utils/useWindowSize"
 import useStyles from './style';
-import {getSessionData} from "../../utils/helpers";
-import {useWindowSize} from "../../utils/useWindowSize"
 
 export const Navbar = () => {
   const [isToken, setIsToken] = useState(null)

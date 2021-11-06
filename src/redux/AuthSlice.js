@@ -58,6 +58,33 @@ export const loginAsync = createAsyncThunk(
   }
 );
 
+export const googleLoginAsync = createAsyncThunk(
+  'auth/googleLoginAsync',
+  async (payload, {rejectWithValue}) => {
+    const {email} = payload;
+    try {
+      const resp = await axios(`${BASE_URL}/api/google`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {email},
+      });
+      if (resp.status !== 200) {
+        throw new Error('Server error!')
+      }
+      const {token, id} = resp.data;
+      if (token && id) {
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("id", id);
+      }
+      return resp;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const logoutAsync = createAsyncThunk(
   'auth/logoutAsync',
   () => {}
@@ -84,12 +111,15 @@ const AuthSlice = createSlice({
   extraReducers: {
     [registerAsync.pending]: setLoading,
     [loginAsync.pending]: setLoading,
+    [googleLoginAsync.pending]: setLoading,
     
     [registerAsync.rejected]: setError,
     [loginAsync.rejected]: setError,
+    [googleLoginAsync.rejected]: setError,
     
     [registerAsync.fulfilled]: setFulfilled,
     [loginAsync.fulfilled]: setFulfilled,
+    [googleLoginAsync.fulfilled]: setFulfilled,
     [logoutAsync.fulfilled]: setFulfilled,
     
     [registerAsync.fulfilled]: (state) => {
@@ -98,6 +128,12 @@ const AuthSlice = createSlice({
     },
     
     [loginAsync.fulfilled]: (state, {payload}) => {
+      state.isLoading = false;
+      state.error = null;
+      state.user = payload?.data;
+    },
+  
+    [googleLoginAsync.fulfilled]: (state, {payload}) => {
       state.isLoading = false;
       state.error = null;
       state.user = payload?.data;

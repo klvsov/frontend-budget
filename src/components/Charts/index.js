@@ -3,12 +3,11 @@ import{useDispatch, useSelector} from "react-redux";
 import {Typography, Grid, Paper, Radio, RadioGroup, FormControlLabel} from "@material-ui/core";
 import {Doughnut, Line} from "react-chartjs-2";
 
-import {setDays, startDateOfPeriod, getColors} from "../../utils/helpers";
-import {COLORS_BG, COLORS_BORDER} from "../../utils/constants";
-import {getIncomeAsync, getChargeAsync} from "../../redux/MoneySlice";
-import {Loader} from "../Loader";
-import {getKeys, getValues} from "../../utils/helpers";
-
+import {setDays, startDateOfPeriod, getColors} from "utils/helpers";
+import {COLORS_BG, COLORS_BORDER} from "utils/constants";
+import {getIncomeAsync, getChargeAsync} from "redux/MoneySlice";
+import {Loader} from "components/Loader";
+import {getKeys, getValues} from "utils/helpers";
 import useStyle from "./style";
 
 const noDataText = 'There is no data for this period'
