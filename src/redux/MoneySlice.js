@@ -14,6 +14,7 @@ export const getIncomeAsync = createAsyncThunk(
   'income/getIncomeAsync',
   async (payload, { rejectWithValue }) => {
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(`${BASE_URL}/api/incomes?user=${userId}`);
       if (resp.status !== 200) {
@@ -31,6 +32,7 @@ export const addIncomeAsync = createAsyncThunk(
   async (payload, { dispatch, rejectWithValue }) => {
     const { name, category, description, money, date } = payload;
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(`${BASE_URL}/api/incomes`, {
         method: 'POST',
@@ -86,6 +88,7 @@ export const getChargeAsync = createAsyncThunk(
   'charge/getChargeAsync',
   async (payload, { rejectWithValue }) => {
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(`${BASE_URL}/api/charges?user=${userId}`);
       if (resp.status !== 200) {
@@ -103,6 +106,7 @@ export const addChargeAsync = createAsyncThunk(
   async (payload, { dispatch, rejectWithValue }) => {
     const { name, category, description, money, date } = payload;
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(`${BASE_URL}/api/charges`, {
         method: 'POST',

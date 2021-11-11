@@ -14,6 +14,7 @@ export const getIncomeCategoriesAsync = createAsyncThunk(
   'incomeCategories/getIncomeCategoryAsync',
   async (payload, { rejectWithValue }) => {
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(
         `${BASE_URL}/api/income-categories?user=${userId}`
@@ -33,6 +34,7 @@ export const addIncomeCategoriesAsync = createAsyncThunk(
   async (payload, { dispatch, rejectWithValue }) => {
     const { category, description } = payload;
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(`${BASE_URL}/api/income-categories`, {
         method: 'POST',
@@ -88,6 +90,7 @@ export const getChargeCategoriesAsync = createAsyncThunk(
   'chargeCategories/getChargeCategoryAsync',
   async (payload, { rejectWithValue }) => {
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(
         `${BASE_URL}/api/charge-categories?user=${userId}`
@@ -107,6 +110,7 @@ export const addChargeCategoriesAsync = createAsyncThunk(
   async (payload, { dispatch, rejectWithValue }) => {
     const { category, description } = payload;
     const { userId } = getSessionData();
+    if(!userId) return
     try {
       const resp = await api(`${BASE_URL}/api/charge-categories`, {
         method: 'POST',
