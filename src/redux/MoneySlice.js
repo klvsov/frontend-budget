@@ -205,13 +205,13 @@ const moneySlice = createSlice({
     [getIncomeAsync.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.error = null;
-      state.income = payload.data;
+      state.income = payload?.data;
     },
 
     [getChargeAsync.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.error = null;
-      state.charge = payload.data;
+      state.charge = payload?.data;
     },
   },
 });

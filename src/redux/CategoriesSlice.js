@@ -209,13 +209,13 @@ const CategoriesSlice = createSlice({
     [getIncomeCategoriesAsync.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.error = null;
-      state.incomeCategories = payload.data;
+      state.incomeCategories = payload?.data;
     },
 
     [getChargeCategoriesAsync.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.error = null;
-      state.chargeCategories = payload.data;
+      state.chargeCategories = payload?.data;
     },
   },
 });
