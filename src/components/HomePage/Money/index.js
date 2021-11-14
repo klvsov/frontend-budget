@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Box,
   Button,
@@ -14,8 +14,7 @@ import {
 } from '@material-ui/core';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import DeleteForeverTwoToneIcon from '@material-ui/icons/DeleteForeverTwoTone';
-import { useSnackbar } from 'notistack';
-
+import {useSnackbar} from 'notistack';
 import {
   deleteIncomeAsync,
   getIncomeAsync,
@@ -26,14 +25,14 @@ import {
   getIncomeCategoriesAsync,
   getChargeCategoriesAsync,
 } from 'redux/CategoriesSlice';
-import { Loader } from 'components/Loader';
-import { TransitionsModal } from 'components/Modal';
-import { byField } from 'utils/helpers';
+import {TransitionsModal} from 'components/Modal';
+import {byField} from 'utils/helpers';
 import useStyle from '../../style';
+import SkeletonTable from "components/SkeletonTable";
 
-export const Money = ({ moneyType }) => {
+export const Money = ({moneyType}) => {
   const dispatch = useDispatch();
-  const { income, charge, isLoading, error } = useSelector(
+  const {income, charge, isLoading, error} = useSelector(
     (state) => state?.money
   );
   const incomeCategories = useSelector(
@@ -42,7 +41,7 @@ export const Money = ({ moneyType }) => {
   const chargeCategories = useSelector(
     (state) => state?.categories?.chargeCategories
   );
-
+  
   const [data, setData] = useState(null);
   const [currentMoney, setCurrentMoney] = useState(income);
   const [fields, setFields] = useState({
@@ -50,38 +49,38 @@ export const Money = ({ moneyType }) => {
     sortField: 'date',
     sortingType: true,
   });
-  const { enqueueSnackbar } = useSnackbar();
-
+  const {enqueueSnackbar} = useSnackbar();
+  
   const classes = useStyle();
-
+  
   useEffect(() => {
     if (error)
-      enqueueSnackbar(`An error occurred: ${error}`, { variant: 'error' });
+      enqueueSnackbar(`An error occurred: ${error}`, {variant: 'error'});
     // eslint-disable-next-line
   }, [error]);
-
+  
   useEffect(() => {
     moneyType === 'income' &&
-      dispatch(getIncomeAsync()) &&
-      dispatch(getIncomeCategoriesAsync());
+    dispatch(getIncomeAsync()) &&
+    dispatch(getIncomeCategoriesAsync());
     moneyType === 'charge' &&
-      dispatch(getChargeAsync()) &&
-      dispatch(getChargeCategoriesAsync());
+    dispatch(getChargeAsync()) &&
+    dispatch(getChargeCategoriesAsync());
   }, [dispatch, moneyType]);
-
+  
   useEffect(() => {
     moneyType === 'income' && setCurrentMoney(income);
     moneyType === 'charge' && setCurrentMoney(charge);
-    setFields((old) => ({ ...old, sortField: 'date' }));
+    setFields((old) => ({...old, sortField: 'date'}));
   }, [moneyType, income, charge]);
-
+  
   useEffect(() => {
     const currentMoney = moneyType === 'income' ? income : charge;
     setCurrentMoney(
       currentMoney?.slice().sort(byField(fields.sortField, fields.sortingType))
     );
   }, [fields.sortField, fields.sortingType, moneyType, charge, income]);
-
+  
   const deleteItem = (itemId) => {
     moneyType === 'income' && dispatch(deleteIncomeAsync(itemId));
     moneyType === 'charge' && dispatch(deleteChargeAsync(itemId));
@@ -95,22 +94,22 @@ export const Money = ({ moneyType }) => {
       money: item.money,
       date: item.date,
     });
-    setFields((old) => ({ ...old, edit: true }));
+    setFields((old) => ({...old, edit: true}));
   };
-
+  
   const sortByField = (field) => {
     field === fields.sortField &&
-      setFields((old) => ({ ...old, sortField: true }));
-    setFields((old) => ({ ...old, sortField: field }));
-    setFields((old) => ({ ...old, sortingType: !fields.sortingType }));
+    setFields((old) => ({...old, sortField: true}));
+    setFields((old) => ({...old, sortField: field}));
+    setFields((old) => ({...old, sortingType: !fields.sortingType}));
   };
-
+  
   return (
     <>
       <TransitionsModal
         isOpen={fields.edit}
         onClose={() => {
-          setFields((old) => ({ ...old, edit: false }));
+          setFields((old) => ({...old, edit: false}));
           data && setData(null);
         }}
         label={`${moneyType} item`}
@@ -127,13 +126,14 @@ export const Money = ({ moneyType }) => {
         <Button
           variant="contained"
           color={'primary'}
-          onClick={() => setFields((old) => ({ ...old, edit: true }))}
+          onClick={() => setFields((old) => ({...old, edit: true}))}
         >
           + Add more
         </Button>
       </Box>
-      <Box>
-        {isLoading && <Loader />}
+      <Box> {isLoading && (
+        <SkeletonTable count={5}/>
+      )}
         {!isLoading && !currentMoney?.length ? (
           <Typography align={'center'} color={'textSecondary'}>
             There are no money yet
@@ -195,40 +195,40 @@ export const Money = ({ moneyType }) => {
               )}
               <TableBody>
                 {!isLoading &&
-                  currentMoney?.map((item, i) => (
-                    <TableRow className={classes.rows} key={item._id}>
-                      <TableCell className={classes.body} align={'right'}>
-                        {i + 1}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        {item.category}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        {item.name}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        {item.description}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        {new Date(item.date).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        {item.money}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        <EditTwoToneIcon
-                          onClick={() => {
-                            editItem(item);
-                          }}
-                          className={classes.actionIcon}
-                        />
-                        <DeleteForeverTwoToneIcon
-                          onClick={() => deleteItem(item._id)}
-                          className={classes.actionIcon}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                currentMoney?.map((item, i) => (
+                  <TableRow className={classes.rows} key={item._id}>
+                    <TableCell className={classes.body} align={'right'}>
+                      {i + 1}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      {item.category}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      {item.name}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      {item.description}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      {new Date(item.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      {item.money}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      <EditTwoToneIcon
+                        onClick={() => {
+                          editItem(item);
+                        }}
+                        className={classes.actionIcon}
+                      />
+                      <DeleteForeverTwoToneIcon
+                        onClick={() => deleteItem(item._id)}
+                        className={classes.actionIcon}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>

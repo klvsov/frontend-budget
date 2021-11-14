@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Box,
   Button,
@@ -14,49 +14,49 @@ import {
 } from '@material-ui/core';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import DeleteForeverTwoToneIcon from '@material-ui/icons/DeleteForeverTwoTone';
-import { useSnackbar } from 'notistack';
+import {useSnackbar} from 'notistack';
 
-import { TransitionsModal } from 'components/Modal';
+import {TransitionsModal} from 'components/Modal';
 import {
   deleteIncomeCategoryAsync,
   getIncomeCategoriesAsync,
   deleteChargeCategoryAsync,
   getChargeCategoriesAsync,
 } from 'redux/CategoriesSlice';
-import { Loader } from 'components/Loader';
 import useStyle from '../../../style';
+import SkeletonTable from "components/SkeletonTable";
 
-export const Category = ({ typeCategory }) => {
+export const Category = ({typeCategory}) => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
   const incomeCategories = state?.categories?.incomeCategories;
   const chargeCategories = state?.categories?.chargeCategories;
   const isLoading = state?.categories?.isLoading;
   const error = state?.categories?.error;
-
+  
   const [edit, setEdit] = useState(false);
   const [data, setData] = useState(null);
   const [currentCategory, setCurrentCategory] = useState(incomeCategories);
-  const { enqueueSnackbar } = useSnackbar();
-
+  const {enqueueSnackbar} = useSnackbar();
+  
   const classes = useStyle();
-
+  
   useEffect(() => {
     if (error)
-      enqueueSnackbar(`An error occurred: ${error}`, { variant: 'error' });
+      enqueueSnackbar(`An error occurred: ${error}`, {variant: 'error'});
     // eslint-disable-next-line
   }, [error]);
-
+  
   useEffect(() => {
     typeCategory === 'income' && dispatch(getIncomeCategoriesAsync());
     typeCategory === 'charge' && dispatch(getChargeCategoriesAsync());
   }, [dispatch, typeCategory]);
-
+  
   useEffect(() => {
     typeCategory === 'income' && setCurrentCategory(incomeCategories);
     typeCategory === 'charge' && setCurrentCategory(chargeCategories);
   }, [typeCategory, incomeCategories, chargeCategories]);
-
+  
   const deleteItem = (itemId) => {
     typeCategory === 'income' && dispatch(deleteIncomeCategoryAsync(itemId));
     typeCategory === 'charge' && dispatch(deleteChargeCategoryAsync(itemId));
@@ -69,7 +69,7 @@ export const Category = ({ typeCategory }) => {
     });
     setEdit(true);
   };
-
+  
   return (
     <>
       <TransitionsModal
@@ -99,7 +99,9 @@ export const Category = ({ typeCategory }) => {
         </Button>
       </Box>
       <Box>
-        {isLoading && <Loader />}
+        {isLoading && (
+          <SkeletonTable count={2}/>
+        )}
         {!isLoading && !currentCategory?.length ? (
           <Typography align={'center'} color={'textSecondary'}>
             There are no categories yet
@@ -127,29 +129,29 @@ export const Category = ({ typeCategory }) => {
               )}
               <TableBody>
                 {!isLoading &&
-                  currentCategory?.map((item, i) => (
-                    <TableRow className={classes.rows} key={item._id}>
-                      <TableCell className={classes.body} align={'right'}>
-                        {i + 1}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        {item.name}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        {item.description}
-                      </TableCell>
-                      <TableCell className={classes.body} align={'center'}>
-                        <EditTwoToneIcon
-                          onClick={() => editItem(item)}
-                          className={classes.actionIcon}
-                        />
-                        <DeleteForeverTwoToneIcon
-                          onClick={() => deleteItem(item._id)}
-                          className={classes.actionIcon}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                currentCategory?.map((item, i) => (
+                  <TableRow className={classes.rows} key={item._id}>
+                    <TableCell className={classes.body} align={'right'}>
+                      {i + 1}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      {item.name}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      {item.description}
+                    </TableCell>
+                    <TableCell className={classes.body} align={'center'}>
+                      <EditTwoToneIcon
+                        onClick={() => editItem(item)}
+                        className={classes.actionIcon}
+                      />
+                      <DeleteForeverTwoToneIcon
+                        onClick={() => deleteItem(item._id)}
+                        className={classes.actionIcon}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>

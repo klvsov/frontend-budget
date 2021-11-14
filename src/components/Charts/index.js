@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Typography,
   Grid,
@@ -8,14 +8,14 @@ import {
   RadioGroup,
   FormControlLabel,
 } from '@material-ui/core';
-import { Doughnut, Line } from 'react-chartjs-2';
+import {Doughnut, Line} from 'react-chartjs-2';
 
-import { setDays, startDateOfPeriod, getColors } from 'utils/helpers';
-import { COLORS_BG, COLORS_BORDER } from 'utils/constants';
-import { getIncomeAsync, getChargeAsync } from 'redux/MoneySlice';
-import { Loader } from 'components/Loader';
-import { getKeys, getValues } from 'utils/helpers';
+import {setDays, startDateOfPeriod, getColors} from 'utils/helpers';
+import {COLORS_BG, COLORS_BORDER} from 'utils/constants';
+import {getIncomeAsync, getChargeAsync} from 'redux/MoneySlice';
+import {getKeys, getValues} from 'utils/helpers';
 import useStyle from './style';
+import Skeleton from "@mui/material/Skeleton";
 
 const noDataText = 'There is no data for this period';
 
@@ -25,30 +25,25 @@ export const Charts = () => {
   const income = state.money.income;
   const charge = state.money.charge;
   const isLoading = state.money.isLoading;
-
+  
   const [period, setPeriod] = useState('week');
   const incomeOfPeriod = [];
   const chargeOfPeriod = [];
   let daysOfPeriod = [];
   const categoriesIn = {};
   const categoriesOut = {};
-
-  const isData = useMemo(
-    () => income.length || charge.length,
-    [income, charge]
-  );
-
-  const classes = useStyle({ isData });
-
+  
+  const classes = useStyle();
+  
   const handleSetPeriod = (event) => {
     setPeriod(event.target.value);
   };
-
+  
   useEffect(() => {
     dispatch(getIncomeAsync());
     dispatch(getChargeAsync());
   }, [dispatch]);
-
+  
   daysOfPeriod = setDays(period);
   daysOfPeriod.forEach((day) => {
     const currentDatesIn = income.filter(
@@ -68,7 +63,7 @@ export const Charts = () => {
     });
     chargeOfPeriod.push(sumOut);
   });
-
+  
   income.forEach((item) => {
     if (Date.parse(item.date) > startDateOfPeriod(period)) {
       if (!getKeys(categoriesIn).includes(item.category)) {
@@ -80,7 +75,7 @@ export const Charts = () => {
       }
     }
   });
-
+  
   charge.forEach((item) => {
     if (Date.parse(item.date) > startDateOfPeriod(period)) {
       if (!getKeys(categoriesOut).includes(item.category)) {
@@ -92,7 +87,7 @@ export const Charts = () => {
       }
     }
   });
-
+  
   const data = {
     labels: daysOfPeriod,
     datasets: [
@@ -112,7 +107,7 @@ export const Charts = () => {
       },
     ],
   };
-
+  
   const dataOut = {
     labels: getKeys(categoriesOut),
     datasets: [
@@ -128,7 +123,7 @@ export const Charts = () => {
       },
     ],
   };
-
+  
   const dataIn = {
     labels: getKeys(categoriesIn),
     datasets: [
@@ -144,7 +139,7 @@ export const Charts = () => {
       },
     ],
   };
-
+  
   return (
     <div className={classes.chartsWrapper}>
       <Typography variant="h3" gutterBottom>
@@ -157,44 +152,43 @@ export const Charts = () => {
         value={period}
         onChange={handleSetPeriod}
       >
-        <FormControlLabel value="week" control={<Radio />} label="Week" />
-        <FormControlLabel value="month" control={<Radio />} label="Month" />
+        <FormControlLabel value="week" control={<Radio/>} label="Week"/>
+        <FormControlLabel value="month" control={<Radio/>} label="Month"/>
       </RadioGroup>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          <div className={classes.lineWrap}>
+      <>
+        <div className={classes.lineWrap}>
+          <Paper className={classes.space}>
+            {isLoading ? (<Skeleton variant="rectangular" width={"100%"}
+                                    height={300}/>) : ((incomeOfPeriod?.length && getKeys(categoriesIn).length) || (chargeOfPeriod?.length && getKeys(categoriesOut).length) ? (
+              <Line data={data} options={{maintainAspectRatio: false}}/>
+            ) : (
+              <Typography>{noDataText}</Typography>
+            ))}
+          </Paper>
+        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
             <Paper className={classes.space}>
-              {getKeys(categoriesIn).length || getKeys(categoriesOut).length ? (
-                <Line data={data} options={{ maintainAspectRatio: false }} />
+              {isLoading ? (<Skeleton variant="circular" width={494} height={494}/>) : (getKeys(categoriesIn).length ? (
+                <Doughnut data={dataIn}/>
               ) : (
                 <Typography>{noDataText}</Typography>
-              )}
+              ))}
             </Paper>
-          </div>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Paper className={classes.space}>
-                {getKeys(categoriesIn).length ? (
-                  <Doughnut data={dataIn} />
-                ) : (
-                  <Typography>{noDataText}</Typography>
-                )}
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Paper className={classes.space}>
-                {getKeys(categoriesOut).length ? (
-                  <Doughnut data={dataOut} />
-                ) : (
-                  <Typography>{noDataText}</Typography>
-                )}
-              </Paper>
-            </Grid>
           </Grid>
-        </>
-      )}
+          <Grid item xs={12} sm={6}>
+            <Paper className={classes.space}>
+              {isLoading ? (
+                <Skeleton variant="circular" width={494} height={494}/>) : (getKeys(categoriesOut).length ? (
+                <Doughnut data={dataOut}/>
+              ) : (
+                <Typography>{noDataText}</Typography>
+              ))}
+            </Paper>
+          </Grid>
+        </Grid>
+      </>
+    
     </div>
   );
 };

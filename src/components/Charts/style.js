@@ -11,19 +11,20 @@ const useStyle = makeStyles(() => {
       justifyContent: 'flex-end',
       flexDirection: 'row',
     },
-    lineWrap: ({ isData }) => ({
+    lineWrap: {
       margin: '8px 0',
       padding: '8px 0',
       '&>div': {
-        minHeight: isData ? '300px' : 'auto',
+        minHeight: 300,
       },
-    }),
+    },
     space: {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       padding: 10,
       height: '100%',
+      minHeight: 494
     },
   });
 });
