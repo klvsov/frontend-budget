@@ -6,11 +6,12 @@ import { Category } from './components/Category';
 import useStyle from './style';
 
 export const Categories = () => {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(Number(localStorage.getItem("categoryType")) || 0);
   const classes = useStyle();
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
+    localStorage.setItem("categoryType", String(newValue));
   };
   return (
     <div className={classes.categoriesWrapper}>
